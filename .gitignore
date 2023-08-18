@@ -42,3 +42,5 @@ public/
 dist/CutOrDieApi.js
 dist/CutOrDieApi.js.LICENSE.txt
 
+.env
+
