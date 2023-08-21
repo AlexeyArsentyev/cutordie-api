@@ -11,8 +11,12 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     .limitFields();
 
   const users = await features.query;
+
   users.forEach(async user => {
-    await user.populate("purchasedCourses").execPopulate();
+    if (!user.purchasedCourses) {
+      return;
+    }
+    await user.populate("purchasedCourses");
   });
 
   res.status(200).json({
@@ -23,9 +27,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id)
-    .populate("purchasedCourses")
-    .exec();
+  const user = await User.findById(req.params.id).populate("purchasedCourses");
 
   if (!user) {
     return next(new AppError("No course found with this ID", 404));

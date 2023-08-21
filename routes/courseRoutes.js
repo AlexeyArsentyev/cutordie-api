@@ -4,7 +4,11 @@ const authController = require("./../controllers/authController");
 
 const router = express.Router();
 
-// router.param("id", courseController.checkID);
+router.post(
+  "/purchase/:id",
+  authController.protect,
+  courseController.purchaseCourse
+);
 
 router
   .route("/")

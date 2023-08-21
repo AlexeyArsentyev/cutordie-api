@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const functions = require("firebase-functions");
 
 dotenv.config({ path: "./config.env" });
 const app = require("./app");
@@ -36,3 +37,5 @@ process.on("uncaughtException", err => {
     process.exit(1);
   });
 });
+
+exports.api = functions.https.onRequest(app);

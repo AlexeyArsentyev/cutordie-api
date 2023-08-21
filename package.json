@@ -2,12 +2,13 @@
   "name": "cutordie",
   "version": "1.0.0",
   "description": "Cut or die",
-  "main": "app.js",
+  "main": "indexf.js",
   "scripts": {
     "start": "nodemon server.js",
     "prod": "set NODE_ENV=prod& nodemon server.js",
     "debug": "ndb server.js",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "deploy": "firebase deploy"
   },
   "author": "Alexey",
   "license": "ISC",
@@ -46,6 +47,6 @@
     "webpack-node-externals": "^3.0.0"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": "18"
   }
 }
