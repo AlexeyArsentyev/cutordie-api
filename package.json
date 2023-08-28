@@ -7,8 +7,7 @@
     "start": "nodemon server.js",
     "prod": "set NODE_ENV=prod& nodemon server.js",
     "debug": "ndb server.js",
-    "build": "webpack --config webpack.config.js",
-    "deploy": "firebase deploy"
+    "build": "webpack --config webpack.config.js"
   },
   "author": "Alexey",
   "license": "ISC",
