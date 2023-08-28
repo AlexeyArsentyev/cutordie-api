@@ -65,12 +65,6 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use(compression());
 
-//test middleware
-// app.use((req, res, next) => {
-//   req.requestTime = new Date().toISOString();
-//   next();
-// });
-
 //routes
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
