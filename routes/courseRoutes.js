@@ -12,8 +12,8 @@ router.post(
 
 router
   .route("/")
-  .get(getAllCourses)
-  .post(authController.courseController.createCourse);
+  .get(courseController.getAllCourses)
+  .post(authController.protect, courseController.createCourse);
 
 router
   .route("/:id")

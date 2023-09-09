@@ -137,7 +137,6 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("protect");
   let token;
   if (
     req.headers.authorization &&
@@ -147,8 +146,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
-
-  console.log(token);
 
   if (!token) {
     return next(
