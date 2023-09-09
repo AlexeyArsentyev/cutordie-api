@@ -43,7 +43,6 @@
     "prettier": "^1.19.1",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
-    "webpack-node-eernals": "^3.0.0",
     "nodemon": "^3.0.1"
   },
   "engines": {
