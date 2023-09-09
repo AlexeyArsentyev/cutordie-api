@@ -30,12 +30,21 @@ exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id).populate("purchasedCourses");
 
   if (!user) {
-    return next(new AppError("No course found with this ID", 404));
+    return next(new AppError("No user found with this ID", 404));
   }
 
   res.status(200).json({
     status: "success",
     data: { user }
+  });
+});
+
+exports.currentUser = catchAsync(async (req, res, next) => {
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: req.user
+    }
   });
 });
 

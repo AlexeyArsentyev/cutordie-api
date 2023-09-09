@@ -12,8 +12,8 @@ router.post(
 
 router
   .route("/")
-  .get(getAllCourses)
-  .post(authController.courseController.createCourse);
+  .get(courseController.getAllCourses)
+  .post(authController.protect, courseController.createCourse);
 
 router
   .route("/:id")
@@ -21,7 +21,7 @@ router
   .patch(courseController.updateCourse)
   .delete(
     authController.protect,
-    authController.restrictTo("admin"),
+    authController.restrictTo,
     courseController.deleteCourse
   );
 
