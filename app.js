@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
+const requestIp = require("request-ip");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -26,10 +27,15 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+app.use(requestIp.mw());
+
 const limiter = rateLimit({
   max: process.env.MAX_REQUESTS_PER_HOUR,
   windowMs: 60 * 60 * 1000,
-  message: "Too many requests from this IP. Please try again in an hour"
+  message: "Too many requests from this IP. Please try again in an hour",
+  keyGenerator: (req, res) => {
+    return req.clientIp; // IP address from requestIp.mw()
+  }
 });
 
 //limit requests from the same IP
