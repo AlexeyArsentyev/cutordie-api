@@ -18,6 +18,9 @@ const app = express();
 //set security http headers
 app.use(helmet());
 
+//for express rate limit working correctly
+app.set("trust proxy", true);
+
 //dev logging
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
