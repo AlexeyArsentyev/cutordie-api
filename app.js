@@ -6,6 +6,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const compression = require("compression");
+const cookieParser = require("cookie-parser");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -43,6 +44,9 @@ app.use((req, res, next) => {
   // Continue to the next middleware
   next();
 });
+
+//cookies
+app.use(cookieParser());
 
 //body parser
 app.use(express.json({ limit: "10kb" }));
