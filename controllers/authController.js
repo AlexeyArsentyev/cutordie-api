@@ -137,6 +137,7 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log("protect");
   let token;
   if (
     req.headers.authorization &&
@@ -152,6 +153,8 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("You are not logged in! Please log in to get access.", 401)
     );
   }
+
+  console.log(token);
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
