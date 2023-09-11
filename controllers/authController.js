@@ -97,6 +97,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
+  console.log("signup");
   const filteredBody = filterFields(
     req.body,
     "userName",
@@ -105,8 +106,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     "passwordConfirm",
     "passwordChangedAt"
   );
+  console.log("1");
 
   const newUser = await User.create(filteredBody);
+  console.log("2");
 
   createSendToken(newUser, 201, res);
 });
@@ -137,7 +140,6 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("protect");
   let token;
   if (
     req.headers.authorization &&
@@ -153,8 +155,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("You are not logged in! Please log in to get access.", 401)
     );
   }
-
-  console.log(token);
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
@@ -221,7 +221,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         message
       });
     } else {
-      console.log(message);
     }
 
     res.status(200).json({
