@@ -9,6 +9,7 @@ const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/email");
 const bcrypt = require("bcryptjs");
 const filterFields = require("./../utils/filterFields");
+const mongoose = require("mongoose");
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user.id);
