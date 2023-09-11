@@ -5,7 +5,7 @@
   "main": "indexf.js",
   "scripts": {
     "start": "nodemon server.js",
-    "prod": "set NODE_ENV=prod& nodemon server.js",
+    "prod": "set NODE_ENV=production& nodemon server.js",
     "debug": "ndb server.js",
     "build": "webpack --config webpack.config.js"
   },

@@ -9,11 +9,11 @@ const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/email");
 const bcrypt = require("bcryptjs");
 const filterFields = require("./../utils/filterFields");
-const mongoose = require("mongoose");
 
 const createSendToken = (user, statusCode, res) => {
+  console.log(1);
   const token = signToken(user.id);
-
+  console.log(2);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -21,13 +21,13 @@ const createSendToken = (user, statusCode, res) => {
     secure: true,
     httpOnly: true
   };
-
-  if (process.env.NODE_ENV === "prod") {
+  console.log(3);
+  if (process.env.NODE_ENV === "production") {
     cookieOptions.secure = true;
   }
-
+  console.log(4);
   res.cookie("jwt", token, cookieOptions);
-
+  console.log(5);
   res.status(statusCode).json({
     status: "success",
     token,
@@ -98,7 +98,6 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  console.log("signup");
   const filteredBody = filterFields(
     req.body,
     "userName",
@@ -107,10 +106,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     "passwordConfirm",
     "passwordChangedAt"
   );
-  console.log("1");
 
   const newUser = await User.create(filteredBody);
-  console.log("2");
 
   createSendToken(newUser, 201, res);
 });
@@ -135,12 +132,14 @@ exports.signin = catchAsync(async (req, res, next) => {
 });
 
 const signToken = id => {
+  console.log("sign");
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log("protect");
   let token;
   if (
     req.headers.authorization &&
@@ -222,6 +221,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         message
       });
     } else {
+      console.log(message);
     }
 
     res.status(200).json({
