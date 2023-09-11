@@ -83,7 +83,7 @@ app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
-  next(new AppError(`Cant find ${req.originalUrl} on this server`, 3));
+  next(new AppError(`Cant find ${req.originalUrl} on this server`, 500));
 });
 
 app.use(globalErrorHandler);
