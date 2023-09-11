@@ -19,6 +19,8 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
+console.log(process.env.JWT_SECRET);
+
 process.on("unhandledRejection", err => {
   console.log("UNHANDLED REJECTION");
 

@@ -98,6 +98,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
+  console.log("signup");
   const filteredBody = filterFields(
     req.body,
     "userName",
@@ -106,15 +107,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     "passwordConfirm",
     "passwordChangedAt"
   );
-  console.log("signup");
-  console.log("DB connection state:", mongoose.connection.readyState);
-  try {
-    const newUser = await User.create(filteredBody);
-    console.log("success");
-  } catch (error) {
-    console.log("Error creating user:", error);
-  }
-  console.log("end");
+  console.log("1");
+
+  const newUser = await User.create(filteredBody);
+  console.log("2");
 
   createSendToken(newUser, 201, res);
 });
