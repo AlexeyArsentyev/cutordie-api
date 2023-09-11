@@ -11,9 +11,8 @@ const bcrypt = require("bcryptjs");
 const filterFields = require("./../utils/filterFields");
 
 const createSendToken = (user, statusCode, res) => {
-  console.log(1);
   const token = signToken(user.id);
-  console.log(2);
+
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -21,13 +20,12 @@ const createSendToken = (user, statusCode, res) => {
     secure: true,
     httpOnly: true
   };
-  console.log(3);
+
   if (process.env.NODE_ENV === "production") {
     cookieOptions.secure = true;
   }
-  console.log(4);
+
   res.cookie("jwt", token, cookieOptions);
-  console.log(5);
   res.status(statusCode).json({
     status: "success",
     token,
@@ -132,14 +130,12 @@ exports.signin = catchAsync(async (req, res, next) => {
 });
 
 const signToken = id => {
-  console.log("sign");
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("protect");
   let token;
   if (
     req.headers.authorization &&
