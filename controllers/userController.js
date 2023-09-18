@@ -68,6 +68,32 @@ exports.createUser = catchAsync(async (req, res) => {
   });
 });
 
+exports.createAdmin = catchAsync(async (req, res, next) => {
+  const filteredBody = filterFields(
+    req.body,
+    "userName",
+    "email",
+    "password",
+    "passwordConfirm",
+    "passwordChangedAt",
+    "adminKey"
+  );
+
+  if (filteredBody.adminKey !== process.env.ADMIN_KEY) {
+    return next(new AppError("Wrong admin key", 401));
+  }
+
+  const newUser = await User.create(filteredBody);
+  newUser.role = "admin";
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      user: newUser
+    }
+  });
+});
+
 exports.updateUser = catchAsync(async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

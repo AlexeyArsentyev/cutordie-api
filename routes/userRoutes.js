@@ -9,6 +9,7 @@ router.get("/currentUser", authController.protect, userController.currentUser);
 router.post("/signup", authController.signup);
 router.post("/signin", authController.signin);
 router.post("/googleAuth", authController.googleAuth);
+router.post("/createAdmin", userController.createAdmin);
 
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword", authController.resetPassword);
