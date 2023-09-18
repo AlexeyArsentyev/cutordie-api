@@ -49,7 +49,16 @@ exports.currentUser = catchAsync(async (req, res, next) => {
 });
 
 exports.createUser = catchAsync(async (req, res) => {
-  const newUser = await User.create(req.body);
+  const filteredBody = filterFields(
+    req.body,
+    "userName",
+    "email",
+    "password",
+    "passwordConfirm",
+    "passwordChangedAt"
+  );
+
+  const newUser = await User.create(filteredBody);
 
   res.status(201).json({
     status: "success",
