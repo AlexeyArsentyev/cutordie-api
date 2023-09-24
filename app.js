@@ -68,7 +68,8 @@ app.use("/api", limiter);
 
 var whitelist = [
   "https://grigoryanandrew22.github.io/cutordie/",
-  "http://localhost:3000"
+  "http://localhost:3000",
+  "http://localhost:8080"
 ];
 var corsOptions = {
   origin: function(origin, callback) {
