@@ -4,6 +4,9 @@ const User = require("./../models/userModel");
 const APIFeatures = require("./../utils/apiFeatures");
 const catchAsync = require("./../utils/catchAsync");
 
+const { google } = require("googleapis");
+const drive = google.drive("v3");
+
 exports.getAllCourses = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Course.find(), req.query)
     .filter()
@@ -100,6 +103,14 @@ exports.purchaseCourse = catchAsync(async (req, res, next) => {
   if (!gatewayResponse.success) {
     return next(new AppError("Payment failed", 400));
   }
+
+  //granting access to google drive file
+
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+  );
 
   user.purchasedCourses.push(course._id);
 

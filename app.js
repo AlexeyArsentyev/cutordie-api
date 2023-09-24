@@ -41,16 +41,27 @@ const limiter = rateLimit({
 //limit requests from the same IP
 app.use("/api", limiter);
 
-// Set up middleware to handle CORS
+// Define your allowed origins
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://grigoryanandrew22.github.io/cutordie/"
+];
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // Replace '*' with your allowed origins
+  const origin = req.headers.origin;
+
+  // If the origin of the request is in the allowed origins list,
+  // set the "Access-Control-Allow-Origin" header to that origin
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  ); // Include 'Authorization' header
+  );
 
-  // Continue to the next middleware
   next();
 });
 
