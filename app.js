@@ -8,6 +8,7 @@ const hpp = require("hpp");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const requestIp = require("request-ip");
+const cors = require("cors");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -42,28 +43,34 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // Define your allowed origins
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://grigoryanandrew22.github.io/cutordie/"
-];
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "https://grigoryanandrew22.github.io/cutordie/"
+// ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
+// app.use((req, res, next) => {
+//   const origin = req.headers.origin;
 
-  // If the origin of the request is in the allowed origins list,
-  // set the "Access-Control-Allow-Origin" header to that origin
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
+//   // If the origin of the request is in the allowed origins list,
+//   // set the "Access-Control-Allow-Origin" header to that origin
+//   if (allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//   }
 
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
 
-  next();
-});
+//   next();
+// });
+
+app.use(
+  cors({
+    origin: "https://grigoryanandrew22.github.io/cutordie/"
+  })
+);
 
 //cookies
 app.use(cookieParser());
