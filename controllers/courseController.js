@@ -36,7 +36,7 @@ exports.getCourse = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createCourse = catchAsync(async (req, res) => {
+exports.createCourse = catchAsync(async (req, res, next) => {
   const newCourse = await Course.create(req.body);
 
   res.status(201).json({
@@ -47,7 +47,7 @@ exports.createCourse = catchAsync(async (req, res) => {
   });
 });
 
-exports.updateCourse = catchAsync(async (req, res) => {
+exports.updateCourse = catchAsync(async (req, res, next) => {
   const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
@@ -76,6 +76,31 @@ exports.deleteCourse = catchAsync(async (req, res) => {
     status: "success",
     data: null
   });
+});
+
+exports.createInvoice = catchAsync(async (req, res) => {
+  fetch(
+    `https://api.monobank.ua/api/merchant/invoice/status?invoiceId=${}`,
+    {
+      method: "GET",
+      headers: myHeaders
+    }
+  )
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Server response wasn't OK");
+      }
+    })
+    .then(json => {
+      console.log(json);
+    });
+
+});
+
+exports.validatePayment = catchAsync(async (req, res) => {
+  
 });
 
 exports.purchaseCourse = catchAsync(async (req, res, next) => {
@@ -109,25 +134,16 @@ exports.purchaseCourse = catchAsync(async (req, res, next) => {
 
   //payment validation
 
-  // if (!paymentToken) {
-  //   return next(new AppError("Payment token required", 400));
-  // }
+  const myHeaders = new Headers();
+  const xtoken =
+    process.env.NODE_ENV === "production"
+      ? process.env.XTOKEN
+      : "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU";
 
-  // const paymentToken = req.body.paymentToken;
+  myHeaders.append("X-Token", xtoken);
 
-  // DEPENDS ON THE GATEWAY THAT WE MAY USE
-  // const gatewayResponse = await paymentGateway.processPayment(paymentToken);
-
-  // if (!gatewayResponse.success) {
-  //   return next(new AppError("Payment failed", 400));
-  // }
 
   //granting access to google drive file
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "./gleaming-nomad-380220-acd2fc3754fc.json",
-    scopes: ["https://www.googleapis.com/auth/drive"]
-  });
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
@@ -135,22 +151,26 @@ exports.purchaseCourse = catchAsync(async (req, res, next) => {
     process.env.REDIRECT_URL
   );
 
+  oauth2Client.getAccessToken((err, token) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("new access_token: " + token);
+    }
+  });
+
   //setting our auth credentials
   oauth2Client.setCredentials({
     refresh_token: process.env.REFRESH_TOKEN
   });
 
-  //LATER
-  // const fileId = course.fileId;
-  // const userEmail = user.email;
+  const fileId = course.fileId;
+  const userEmail = user.email;
 
   const drive = google.drive({
     version: "v3",
     auth: oauth2Client
   });
-
-  const fileId = "1-GG0PCOtX0lMF6WzbAMfmj6fsD3a6AgB";
-  const userEmail = "cutordieofficial@gmail.com";
 
   const result = await drive.permissions.create({
     fileId: fileId,

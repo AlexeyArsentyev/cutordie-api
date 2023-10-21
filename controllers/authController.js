@@ -186,15 +186,17 @@ exports.currentUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.restrictTo = (...roles) =>
-  catchAsync(async (req, res, next) => {
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError("You dont have a permission to perform this action", 403)
+        new AppError("You do not have permission to perform this action", 403)
       );
     }
+
     next();
-  });
+  };
+};
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });

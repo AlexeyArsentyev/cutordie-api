@@ -20,12 +20,12 @@ router
   .get(courseController.getCourse)
   .patch(
     authController.protect,
-    authController.restrictTo,
+    authController.restrictTo("admin"),
     courseController.updateCourse
   )
   .delete(
     authController.protect,
-    authController.restrictTo,
+    authController.restrictTo("admin"),
     courseController.deleteCourse
   );
 
