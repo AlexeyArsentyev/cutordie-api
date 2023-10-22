@@ -79,8 +79,83 @@ exports.deleteCourse = catchAsync(async (req, res) => {
 });
 
 exports.createInvoice = catchAsync(async (req, res) => {
+  console.log("started invoice");
+
+  const myHeaders = new Headers();
+  const xtoken =
+    process.env.NODE_ENV === "production"
+      ? process.env.XTOKEN
+      : "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU";
+
+  myHeaders.append("X-Token", xtoken);
+
+  const body = {
+    amount: 4200,
+    ccy: 980,
+    merchantPaymInfo: {
+      reference: "84d0070ee4e44667b31371d8f8813947",
+      destination: "Покупка щастя",
+      comment: "Покупка щастя",
+      basketOrder: [
+        {
+          name: "Табуретка",
+          qty: 2,
+          sum: 2100,
+          icon: "string",
+          unit: "шт.",
+          code: "d21da1c47f3c45fca10a10c32518bdeb",
+          barcode: "string",
+          header: "string",
+          footer: "string",
+          tax: [],
+          uktzed: "string"
+        }
+      ]
+    },
+    redirectUrl: "https://grigoryanandrew22.github.io/cutordie/",
+    webHookUrl:
+      "https://example.com/mono/acquiring/webhook/maybesomegibberishuniquestringbutnotnecessarily",
+    validity: 3600,
+    paymentType: "debit",
+
+    code: "0a8637b3bccb42aa93fdeb791b8b58e9",
+    saveCardData: {
+      saveCard: true,
+      walletId: "69f780d841a0434aa535b08821f4822c"
+    }
+  };
+
+  fetch(`https://api.monobank.ua/api/merchant/invoice/create`, {
+    method: "POST",
+    headers: myHeaders,
+    body
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Server response wasn't OK");
+      }
+    })
+    .then(json => {
+      console.log(json);
+    });
+});
+
+exports.validatePayment = catchAsync(async (req, res) => {
+  console.log("payment validated");
+  const invoiceId = "something";
+
+  const myHeaders = new Headers();
+  const xtoken =
+    process.env.NODE_ENV === "production"
+      ? process.env.XTOKEN
+      : "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU";
+
+  myHeaders.append("X-Token", xtoken);
+
   fetch(
-    `https://api.monobank.ua/api/merchant/invoice/status?invoiceId=${}`,
+    `https://api.monobank.ua/api/merchant/invoice/status?invoiceId=${invoiceId}`,
     {
       method: "GET",
       headers: myHeaders
@@ -96,11 +171,11 @@ exports.createInvoice = catchAsync(async (req, res) => {
     .then(json => {
       console.log(json);
     });
-
 });
 
-exports.validatePayment = catchAsync(async (req, res) => {
-  
+exports.testPayment = catchAsync(async (req, res) => {
+  console.log("payment validated");
+  console.log(req);
 });
 
 exports.purchaseCourse = catchAsync(async (req, res, next) => {
@@ -133,15 +208,6 @@ exports.purchaseCourse = catchAsync(async (req, res, next) => {
   }
 
   //payment validation
-
-  const myHeaders = new Headers();
-  const xtoken =
-    process.env.NODE_ENV === "production"
-      ? process.env.XTOKEN
-      : "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU";
-
-  myHeaders.append("X-Token", xtoken);
-
 
   //granting access to google drive file
 

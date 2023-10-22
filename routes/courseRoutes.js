@@ -10,6 +10,17 @@ router.post(
   courseController.purchaseCourse
 );
 
+router.post(
+  "/createInvoice",
+  authController.protect,
+  courseController.createInvoice
+);
+router.post(
+  "/testPayment",
+  authController.protect,
+  courseController.testPayment
+);
+
 router
   .route("/")
   .get(courseController.getAllCourses)
