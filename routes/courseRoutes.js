@@ -15,11 +15,7 @@ router.post(
   authController.protect,
   courseController.createInvoice
 );
-router.post(
-  "/testPayment",
-  authController.protect,
-  courseController.testPayment
-);
+router.post("/testPayment", courseController.testPayment);
 
 router
   .route("/")
