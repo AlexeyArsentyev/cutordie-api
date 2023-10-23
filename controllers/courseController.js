@@ -172,6 +172,9 @@ exports.validatePayment = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
+  console.log("SUCCESS");
+  console.log(user.userName, course.name);
+
   res.status(200).json({
     status: "success",
     data: {
@@ -235,9 +238,6 @@ exports.giveAccess = catchAsync(async (req, res) => {
   }
 
   //db stuff
-
-  console.log("SUCCESS");
-  console.log(user.userName, course.name);
 
   res.status(200).json({
     status: "success",

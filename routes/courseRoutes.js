@@ -9,6 +9,7 @@ router.post(
   authController.protect,
   courseController.createInvoice
 );
+router.post("/validatePayment", courseController.validatePayment);
 router.post("/giveAccess", courseController.giveAccess);
 
 router
