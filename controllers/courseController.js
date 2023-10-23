@@ -102,8 +102,7 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
       comment: "Cut or die haircut course"
     },
     redirectUrl: "https://grigoryanandrew22.github.io/cutordie/",
-    webHookUrl:
-      "https://cut-or-die-api.onrender.com/api/v1/courses/testPayment",
+    webHookUrl: "https://cut-or-die-api.onrender.com/api/v1/courses/giveAccess",
     validity: 3600,
     paymentType: "debit",
     saveCardData: {
@@ -122,8 +121,6 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   });
 
   const result = await response.json();
-
-  console.log(result);
 
   const invoiceId = result.invoiceId;
   const courseId = course._id;
