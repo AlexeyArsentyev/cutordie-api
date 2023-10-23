@@ -79,7 +79,6 @@ exports.deleteCourse = catchAsync(async (req, res) => {
 });
 
 exports.createInvoice = catchAsync(async (req, res, next) => {
-  console.log("create invoice");
   const user = req.user;
 
   const course = await Course.findById(req.params.id);
@@ -95,12 +94,12 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 
   const url = "https://api.monobank.ua/api/merchant/invoice/create";
   const data = {
-    amount: 4200,
+    amount: course.price,
     ccy: 980,
     merchantPaymInfo: {
       reference: "84d0070ee4e44667b31371d8f8813947",
-      destination: "Покупка щастя",
-      comment: "Покупка щастя"
+      destination: "Some course",
+      comment: "Cut or die haircut course"
     },
     redirectUrl: "https://grigoryanandrew22.github.io/cutordie/",
     webHookUrl:
@@ -123,11 +122,11 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   });
 
   const result = await response.json();
-  console.log(result);
 
   const invoiceId = result.invoiceId;
 
-  user.invoiceIds.push(invoiceId);
+  user.invoices.invoiceId.push(invoiceId);
+  user.invoices.invoiceId.push(course);
 
   await user.save({ validateBeforeSave: false });
 
@@ -140,51 +139,28 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.validatePayment = catchAsync(async (req, res) => {
-  console.log("payment validated");
-  const invoiceId = "something";
-
-  const myHeaders = new Headers();
-  const xtoken =
-    process.env.NODE_ENV === "production"
-      ? process.env.XTOKEN
-      : "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU";
-
-  myHeaders.append("X-Token", xtoken);
-
-  fetch(
-    `https://api.monobank.ua/api/merchant/invoice/status?invoiceId=${invoiceId}`,
-    {
-      method: "GET",
-      headers: myHeaders
-    }
-  )
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("Server response wasn't OK");
-      }
-    })
-    .then(json => {
-      console.log(json);
-    });
-});
-
 exports.testPayment = catchAsync(async (req, res) => {
   console.log("payment validated");
   console.log(req.body);
 });
 
-exports.purchaseCourse = catchAsync(async (req, res, next) => {
+exports.giveAccess = catchAsync(async (req, res, next) => {
+  const invoiceId = req.body.invoiceId;
+  const user = User.findOne({ "invoices.invoiceId": invoiceId });
+
+  if (!user) {
+    console.error("No user found that matches invoiceId");
+    return next(new AppError("No user found with this invoiceId", 404));
+  }
+
+  console.log(user);
+
   //course validation
-  const course = await Course.findById(req.params.id);
+  const course = await Course.findById();
 
   if (!course) {
     return next(new AppError("No course found with this ID", 404));
   }
-
-  const user = req.user;
 
   //granting access to google drive file
 

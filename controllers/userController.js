@@ -16,7 +16,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     if (!user.purchasedCourses) {
       return;
     }
-    await user.populate("purchasedCourses");
+    // await user.populate("purchasedCourses");
   });
 
   res.status(200).json({
@@ -27,8 +27,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id).populate("purchasedCourses");
-
+  const user = await User.findById(req.params.id);
   if (!user) {
     return next(new AppError("No user found with this ID", 404));
   }

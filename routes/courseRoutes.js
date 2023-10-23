@@ -5,17 +5,11 @@ const authController = require("./../controllers/authController");
 const router = express.Router();
 
 router.post(
-  "/purchase/:id",
-  authController.protect,
-  courseController.purchaseCourse
-);
-
-router.post(
   "/createInvoice/:id",
   authController.protect,
   courseController.createInvoice
 );
-router.post("/testPayment", courseController.testPayment);
+router.post("/giveAccess", courseController.giveAccess);
 
 router
   .route("/")
