@@ -136,6 +136,7 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log("protect");
   let token;
   // if (
   //   req.headers.authorization &&
@@ -175,15 +176,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
 
   next();
-});
-
-exports.currentUser = catchAsync(async (req, res, next) => {
-  res.status(200).json({
-    status: "success",
-    data: {
-      user: req.user
-    }
-  });
 });
 
 exports.restrictTo = (...roles) => {

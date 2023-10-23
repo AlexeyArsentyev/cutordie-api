@@ -78,7 +78,16 @@ exports.deleteCourse = catchAsync(async (req, res) => {
   });
 });
 
-exports.createInvoice = catchAsync(async (req, res) => {
+exports.createInvoice = catchAsync(async (req, res, next) => {
+  console.log("create invoice");
+  const user = req.user;
+
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    return next(new AppError("No course found with this ID", 404));
+  }
+
   const xtoken =
     process.env.NODE_ENV === "production"
       ? process.env.XTOKEN
@@ -115,6 +124,20 @@ exports.createInvoice = catchAsync(async (req, res) => {
 
   const result = await response.json();
   console.log(result);
+
+  const invoiceId = result.invoiceId;
+
+  user.invoiceIds.push(invoiceId);
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      invoiceId,
+      url: result.pageUrl
+    }
+  });
 });
 
 exports.validatePayment = catchAsync(async (req, res) => {
@@ -161,28 +184,7 @@ exports.purchaseCourse = catchAsync(async (req, res, next) => {
     return next(new AppError("No course found with this ID", 404));
   }
 
-  //getting user
-  let token = req.cookies.jwt;
-
-  if (!token) {
-    return next(
-      new AppError("You are not logged in! Please log in to get access.", 401)
-    );
-  }
-
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-  const user = await User.findById(decoded.id);
-  if (!user) {
-    return next(
-      new AppError(
-        "The user belonging to this token does no longer exist.",
-        401
-      )
-    );
-  }
-
-  //payment validation
+  const user = req.user;
 
   //granting access to google drive file
 

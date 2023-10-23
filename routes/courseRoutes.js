@@ -11,7 +11,7 @@ router.post(
 );
 
 router.post(
-  "/createInvoice",
+  "/createInvoice/:id",
   authController.protect,
   courseController.createInvoice
 );
