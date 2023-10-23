@@ -126,9 +126,9 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   console.log(result);
 
   const invoiceId = result.invoiceId;
+  const courseId = course._id;
 
-  user.invoices.invoiceId = invoiceId;
-  user.invoices.courseId = course._id;
+  user.invoices.push({ invoiceId, courseId });
 
   await user.save({ validateBeforeSave: false });
 
@@ -148,17 +148,20 @@ exports.testPayment = catchAsync(async (req, res) => {
 
 exports.giveAccess = catchAsync(async (req, res, next) => {
   const invoiceId = req.body.invoiceId;
-  const user = User.findOne({ "invoices.invoiceId": invoiceId });
+  const user = await User.findOne({ "invoices.invoiceId": invoiceId });
+
+  console.log(user);
+
+  const invoice = user.invoices[0];
+  const courseId = invoice.courseId;
 
   if (!user) {
     console.error("No user found that matches invoiceId");
     return next(new AppError("No user found with this invoiceId", 404));
   }
 
-  console.log(user);
-
   //course validation
-  const course = await Course.findById();
+  const course = await Course.findById(courseId);
 
   if (!course) {
     return next(new AppError("No course found with this ID", 404));
@@ -166,51 +169,64 @@ exports.giveAccess = catchAsync(async (req, res, next) => {
 
   //granting access to google drive file
 
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URL
-  );
+  // const oauth2Client = new google.auth.OAuth2( // DO NOT DELETE!
+  //   process.env.CLIENT_ID,
+  //   process.env.CLIENT_SECRET,
+  //   process.env.REDIRECT_URL
+  // );
 
-  oauth2Client.getAccessToken((err, token) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("new access_token: " + token);
-    }
-  });
+  // const scopes = ["https://www.googleapis.com/auth/drive"];
 
-  //setting our auth credentials
-  oauth2Client.setCredentials({
-    refresh_token: process.env.REFRESH_TOKEN
-  });
+  // const authUrl = oauth2Client.generateAuthUrl({
+  //   access_type: "offline", // This ensures you get a refresh token
+  //   scope: scopes
+  // });
 
-  const fileId = course.fileId;
-  const userEmail = user.email;
+  // console.log("Authorize this app by visiting this URL:", authUrl);
 
-  const drive = google.drive({
-    version: "v3",
-    auth: oauth2Client
-  });
+  // const authorizationCode = "YOUR_AUTHORIZATION_CODE"; // Replace with the actual code you received.
 
-  const result = await drive.permissions.create({
-    fileId: fileId,
-    requestBody: {
-      role: "reader", // or 'writer', 'commenter'
-      type: "user",
-      emailAddress: userEmail
-    },
-    fields: "id"
-  });
+  // oauth2Client.getToken(authorizationCode, (err, tokens) => {
+  //   if (err) {
+  //     console.error("Error getting access token:", err);
+  //   } else {
+  //     oauth2Client.setCredentials(tokens);
+  //     console.log("Access token:", tokens.access_token);
+  //     console.log("Refresh token:", tokens.refresh_token);
+  //   }
+  // });
 
-  if (!result) {
-    return next(
-      new AppError(
-        "The user belonging to this token does no longer exist.",
-        401
-      )
-    );
-  }
+  // //setting our auth credentials
+  // oauth2Client.setCredentials({
+  //   refresh_token: process.env.REFRESH_TOKEN
+  // });
+
+  // const fileId = course.fileId;
+  // const userEmail = user.email;
+
+  // const drive = google.drive({
+  //   version: "v3",
+  //   auth: oauth2Client
+  // });
+
+  // const result = await drive.permissions.create({
+  //   fileId: fileId,
+  //   requestBody: {
+  //     role: "reader", // or 'writer', 'commenter'
+  //     type: "user",
+  //     emailAddress: userEmail
+  //   },
+  //   fields: "id"
+  // });
+
+  // if (!result) {
+  //   return next(
+  //     new AppError(
+  //       "The user belonging to this token does no longer exist.",
+  //       401
+  //     )
+  //   );
+  // }
 
   //db stuff
 
