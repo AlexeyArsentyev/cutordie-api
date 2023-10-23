@@ -79,8 +79,6 @@ exports.deleteCourse = catchAsync(async (req, res) => {
 });
 
 exports.createInvoice = catchAsync(async (req, res) => {
-  console.log("started invoice");
-
   const xtoken =
     process.env.NODE_ENV === "production"
       ? process.env.XTOKEN
@@ -152,7 +150,7 @@ exports.validatePayment = catchAsync(async (req, res) => {
 
 exports.testPayment = catchAsync(async (req, res) => {
   console.log("payment validated");
-  console.log(req);
+  console.log(req.body);
 });
 
 exports.purchaseCourse = catchAsync(async (req, res, next) => {
