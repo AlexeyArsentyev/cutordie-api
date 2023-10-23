@@ -147,10 +147,14 @@ exports.testPayment = catchAsync(async (req, res) => {
 });
 
 exports.giveAccess = catchAsync(async (req, res, next) => {
+  if (req.body.status !== "success") {
+    return res.status(400).json({
+      status: "failed"
+    });
+  }
+
   const invoiceId = req.body.invoiceId;
   const user = await User.findOne({ "invoices.invoiceId": invoiceId });
-
-  console.log(user);
 
   const invoice = user.invoices[0];
   const courseId = invoice.courseId;
@@ -164,7 +168,9 @@ exports.giveAccess = catchAsync(async (req, res, next) => {
   const course = await Course.findById(courseId);
 
   if (!course) {
-    return next(new AppError("No course found with this ID", 404));
+    return res.status(400).json({
+      status: "failed"
+    });
   }
 
   //granting access to google drive file
@@ -235,6 +241,9 @@ exports.giveAccess = catchAsync(async (req, res, next) => {
   await user.save({
     validateBeforeSave: false
   });
+
+  console.log("SUCCESS");
+  console.log(user.userName, course.name);
 
   res.status(200).json({
     status: "success",
