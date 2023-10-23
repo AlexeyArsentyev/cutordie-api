@@ -123,10 +123,12 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 
   const result = await response.json();
 
+  console.log(result);
+
   const invoiceId = result.invoiceId;
 
-  user.invoices.invoiceId.push(invoiceId);
-  user.invoices.invoiceId.push(course);
+  user.invoices.invoiceId = invoiceId;
+  user.invoices.courseId = course._id;
 
   await user.save({ validateBeforeSave: false });
 

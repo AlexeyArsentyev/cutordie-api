@@ -136,7 +136,6 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("protect");
   let token;
   // if (
   //   req.headers.authorization &&
