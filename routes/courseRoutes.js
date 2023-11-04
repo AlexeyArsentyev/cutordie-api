@@ -10,7 +10,16 @@ router.post(
   courseController.createInvoice
 );
 router.post("/validatePayment", courseController.validatePayment);
-router.post("/giveAccess", courseController.giveAccess);
+router.post(
+  "/giveAccess/:id",
+  authController.protect,
+  courseController.giveAccess
+);
+router.post(
+  "/authorizeDisk",
+  authController.protect,
+  courseController.authorizeDisk
+);
 
 router
   .route("/")

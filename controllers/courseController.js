@@ -139,11 +139,6 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.testPayment = catchAsync(async (req, res) => {
-  console.log("payment validated");
-  console.log(req.body);
-});
-
 exports.validatePayment = catchAsync(async (req, res, next) => {
   if (req.body.status !== "success") {
     return next(new AppError("Invoice is not paid yet", 202));
@@ -186,6 +181,14 @@ exports.validatePayment = catchAsync(async (req, res, next) => {
 });
 
 exports.giveAccess = catchAsync(async (req, res) => {
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    return next(new AppError("No course found with this ID", 404));
+  }
+
+  const user = req.user;
+
   const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
@@ -196,6 +199,8 @@ exports.giveAccess = catchAsync(async (req, res) => {
     access_type: "offline",
     scope: "https://www.googleapis.com/auth/drive"
   });
+
+  console.log(authUrl);
 
   oauth2Client.getAccessToken((err, token) => {
     if (err) {
@@ -237,12 +242,38 @@ exports.giveAccess = catchAsync(async (req, res) => {
     );
   }
 
-  //db stuff
-
   res.status(200).json({
     status: "success",
     data: {
       course
     }
   });
+});
+
+exports.authorizeDisk = catchAsync(async (req, res) => {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+  );
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: "https://www.googleapis.com/auth/drive"
+  });
+  res.redirect(authUrl);
+});
+
+exports.authorizeDisk = catchAsync(async (req, res) => {
+  const code = req.query.code;
+
+  try {
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    // Save tokens and handle the response
+
+    res.send("Authorization successful");
+  } catch (error) {
+    // Handle the error
+    res.status(500).send("Authorization failed");
+  }
 });
