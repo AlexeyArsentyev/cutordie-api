@@ -18,27 +18,16 @@ const userRouter = require("./routes/userRoutes");
 const app = express();
 
 //allow cors from all origins
-const allowedOrigins = [
-  "https://grigoryanandrew22.github.io/cutordie/",
-  "http://localhost:3000"
-];
+const corsOptions = {
+  origin: [
+    "https://grigoryanandrew22.github.io/cutordie/",
+    "http://localhost:3000"
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true
+};
 
-app.use(
-  cors({
-    origin: function(origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        var msg =
-          "The CORS policy for this site does not " +
-          "allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    credentials: true
-  })
-);
+app.use(cors(corsOptions));
 
 //set security http headers
 app.use(helmet());
