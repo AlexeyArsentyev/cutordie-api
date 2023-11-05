@@ -137,7 +137,10 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log(0);
   const token = req.cookies.jwt;
+  console.log(1);
+  console.log(token);
 
   if (!token) {
     return next(
@@ -146,6 +149,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(2);
+  console.log(decoded);
 
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
@@ -162,6 +167,9 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("User recently changed password. Please login again.", 401)
     );
   }
+
+  console.log(3);
+  console.log(currentUser);
 
   req.user = currentUser;
 
