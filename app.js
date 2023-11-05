@@ -122,6 +122,9 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use(compression());
 
+//cookies
+app.use(cookieParser());
+
 //routes
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
