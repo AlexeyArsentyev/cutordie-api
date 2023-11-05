@@ -5,6 +5,7 @@ const APIFeatures = require("./../utils/apiFeatures");
 const catchAsync = require("./../utils/catchAsync");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
+const session = require("express-session");
 
 const { google } = require("googleapis");
 
@@ -181,27 +182,6 @@ exports.validatePayment = catchAsync(async (req, res, next) => {
 });
 
 exports.giveAccess = catchAsync(async (req, res) => {
-  const course = await Course.findById(req.params.id);
-
-  if (!course) {
-    return next(new AppError("No course found with this ID", 404));
-  }
-
-  const user = req.user;
-
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URL
-  );
-
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: "https://www.googleapis.com/auth/drive"
-  });
-
-  console.log(authUrl);
-
   oauth2Client.getAccessToken((err, token) => {
     if (err) {
       console.log(err);
@@ -250,30 +230,29 @@ exports.giveAccess = catchAsync(async (req, res) => {
   });
 });
 
-exports.authorizeDisk = catchAsync(async (req, res) => {
+exports.authorizeDisk = catchAsync(async (req, res, next) => {
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    return next(new AppError("No course found with this ID", 404));
+  }
+
+  const user = req.user;
+
   const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
     process.env.REDIRECT_URL
   );
+
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: "https://www.googleapis.com/auth/drive"
   });
+
+  req.session.userId = "something";
+
+  console.log(authUrl);
+
   res.redirect(authUrl);
-});
-
-exports.authorizeDisk = catchAsync(async (req, res) => {
-  const code = req.query.code;
-
-  try {
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
-    // Save tokens and handle the response
-
-    res.send("Authorization successful");
-  } catch (error) {
-    // Handle the error
-    res.status(500).send("Authorization failed");
-  }
 });

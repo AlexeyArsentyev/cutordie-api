@@ -16,7 +16,7 @@ router.post(
   courseController.giveAccess
 );
 router.post(
-  "/authorizeDisk",
+  "/authorizeDisk/:id",
   authController.protect,
   courseController.authorizeDisk
 );

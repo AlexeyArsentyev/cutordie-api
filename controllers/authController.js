@@ -9,7 +9,7 @@ const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/email");
 const bcrypt = require("bcryptjs");
 const filterFields = require("./../utils/filterFields");
-  
+
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user.id);
 
@@ -17,6 +17,7 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
+    sameSite: "None",
     secure: true,
     httpOnly: true
   };
@@ -136,17 +137,7 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  let token;
-  // if (
-  //   req.headers.authorization &&
-  //   req.headers.authorization.startsWith("Bearer")
-  // ) {
-  //   token = req.headers.authorization.split(" ")[1];
-  // } else if (req.cookies.jwt) {
-  //   token = req.cookies.jwt;
-  // }
-
-  token = req.cookies.jwt;
+  const token = req.cookies.jwt;
 
   if (!token) {
     return next(
