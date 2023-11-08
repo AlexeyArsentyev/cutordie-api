@@ -19,10 +19,7 @@ const app = express();
 
 //allow cors from all origins
 const corsOptions = {
-  origin: [
-    "https://grigoryanandrew22.github.io/cutordie/",
-    "http://localhost:3000"
-  ],
+  origin: "https://grigoryanandrew22.github.io/cutordie/",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true
 };
