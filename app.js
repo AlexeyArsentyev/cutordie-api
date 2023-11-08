@@ -21,7 +21,9 @@ const app = express();
 const corsOptions = {
   origin: "https://grigoryanandrew22.github.io/cutordie/",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true
+  credentials: true,
+  httpOnly: false,
+  sameSite: "none"
 };
 
 app.use(cors(corsOptions));
