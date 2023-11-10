@@ -19,11 +19,11 @@ const app = express();
 
 //allow cors from all origins
 const corsOptions = {
-  origin: "https://grigoryanandrew22.github.io",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  httpOnly: false,
-  sameSite: "none"
+  origin: [
+    "https://grigoryanandrew22.github.io/cutordie/",
+    "http://localhost:3000"
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 };
 
 app.use(cors(corsOptions));

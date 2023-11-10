@@ -137,10 +137,9 @@ const signToken = id => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log(0);
+  console.log("START PROTECT");
   console.log(req.cookies);
   const token = req.cookies.jwt;
-  console.log(1);
   console.log(token);
 
   if (!token) {
@@ -150,7 +149,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(2);
+  console.log("DECODED");
   console.log(decoded);
 
   const currentUser = await User.findById(decoded.id);
@@ -169,7 +168,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  console.log(3);
+  console.log("CURRENT USER");
   console.log(currentUser);
 
   req.user = currentUser;
