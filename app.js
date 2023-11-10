@@ -20,7 +20,10 @@ const app = express();
 //allow cors from all origins
 const corsOptions = {
   origin: "https://grigoryanandrew22.github.io",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  httpOnly: false,
+  sameSite: "none"
 };
 
 app.use(cors(corsOptions));
