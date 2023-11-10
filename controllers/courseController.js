@@ -131,13 +131,15 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      invoiceId,
-      url: result.pageUrl
-    }
-  });
+  // res.status(200).json({
+  //   status: "success",
+  //   data: {
+  //     invoiceId,
+  //     url: result.pageUrl
+  //   }
+  // });
+
+  res.redirect(result.pageUrl);
 });
 
 exports.validatePayment = catchAsync(async (req, res, next) => {
