@@ -39,7 +39,6 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.currentUser = catchAsync(async (req, res, next) => {
-  console.log(4);
   res.status(200).json({
     status: "success",
     data: {

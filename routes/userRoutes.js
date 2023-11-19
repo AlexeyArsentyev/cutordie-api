@@ -8,6 +8,7 @@ router.get("/currentUser", authController.protect, userController.currentUser);
 
 router.post("/signup", authController.signup);
 router.post("/signin", authController.signin);
+router.delete("/logout", authController.protect, authController.logout);
 router.post("/googleAuth", authController.googleAuth);
 router.post("/createAdmin", userController.createAdmin);
 

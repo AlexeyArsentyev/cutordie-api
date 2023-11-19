@@ -136,11 +136,16 @@ const signToken = id => {
   });
 };
 
+exports.logout = catchAsync(async (req, res) => {
+  res.clearCookie("jwt");
+  res.status(204).json({
+    status: "success",
+    data: null
+  });
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("START PROTECT");
-  console.log(req.cookies);
   const token = req.cookies.jwt;
-  console.log(token);
 
   if (!token) {
     return next(
@@ -149,8 +154,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log("DECODED");
-  console.log(decoded);
 
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
@@ -167,9 +170,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("User recently changed password. Please login again.", 401)
     );
   }
-
-  console.log("CURRENT USER");
-  console.log(currentUser);
 
   req.user = currentUser;
 

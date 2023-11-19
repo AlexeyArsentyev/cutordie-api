@@ -184,51 +184,41 @@ exports.validatePayment = catchAsync(async (req, res, next) => {
 });
 
 exports.giveAccess = catchAsync(async (req, res) => {
-  oauth2Client.getAccessToken((err, token) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("new access_token: " + token);
-    }
-  });
+  const course = await Course.findById(req.params.id);
 
-  //setting our auth credentials
-  oauth2Client.setCredentials({
-    refresh_token: process.env.REFRESH_TOKEN
-  });
+  if (!course) {
+    return next(new AppError("No course found with this ID", 404));
+  }
+
+  const user = req.user;
+
+  const auth = new google.auth.JWT(
+    process.env.SERVICE_ACCOUNT_EMAIL,
+    null,
+    process.env.SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    ["https://www.googleapis.com/auth/drive"]
+  );
 
   const fileId = course.fileId;
-  const userEmail = user.email;
 
-  const drive = google.drive({
-    version: "v3",
-    auth: oauth2Client
-  });
-
+  const drive = google.drive("v3");
   const result = await drive.permissions.create({
-    fileId: fileId,
+    auth,
+    fileId: "1TTcG6LUynoBgZzLYDPbQM4e5cfo6sNek",
     requestBody: {
-      role: "reader", // or 'writer', 'commenter'
+      role: "reader",
       type: "user",
-      emailAddress: userEmail
+      // emailAddress: user.email
+      emailAddress: "bvr2006bvr2006@gmail.com"
     },
     fields: "id"
   });
 
-  if (!result) {
-    return next(
-      new AppError(
-        "The user belonging to this token does no longer exist.",
-        401
-      )
-    );
-  }
+  const id = result.data.id;
 
   res.status(200).json({
     status: "success",
-    data: {
-      course
-    }
+    data: { id }
   });
 });
 
@@ -248,13 +238,16 @@ exports.authorizeDisk = catchAsync(async (req, res, next) => {
   );
 
   const authUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: "https://www.googleapis.com/auth/drive"
+    access_type: "online",
+    scope: "https://www.googleapis.com/auth/drive.appdata"
   });
-
-  req.session.userId = "something";
 
   console.log(authUrl);
 
-  res.redirect(authUrl);
+  res.status(200).json({
+    status: "success",
+    data: {
+      authUrl
+    }
+  });
 });
