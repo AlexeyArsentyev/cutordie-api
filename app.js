@@ -26,7 +26,7 @@ const corsOptions = {
   sameSite: "none"
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 //set security http headers
 app.use(helmet());
