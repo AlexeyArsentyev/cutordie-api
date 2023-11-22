@@ -28,7 +28,31 @@ const app = express();
 
 // app.use(cors());
 
-app.use(cors({ origin: ["http://localhost:3000", "https://origin2.com"] }));
+// app.use(cors({ origin: ["http://localhost:3000", "https://origin2.com"] }));
+
+app.use(function(req, res, next) {
+  var allowedDomains = [
+    "http://localhost:3000",
+    "https://grigoryanandrew22.github.io/cutordie",
+    "https://b8q1q1v9-3000.euw.devtunnels.ms/cutordie"
+  ];
+  var origin = req.headers.origin;
+  if (allowedDomains.indexOf(origin) > -1) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  next();
+});
 
 //set security http headers
 app.use(helmet());
