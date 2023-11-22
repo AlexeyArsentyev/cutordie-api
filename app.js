@@ -17,16 +17,18 @@ const userRouter = require("./routes/userRoutes");
 
 const app = express();
 
-//allow cors from all origins
-const corsOptions = {
-  origin: "https://grigoryanandrew22.github.io",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  httpOnly: false,
-  sameSite: "none"
-};
+// //allow cors from all origins
+// const corsOptions = {
+//   origin: "https://grigoryanandrew22.github.io",
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   httpOnly: false,
+//   sameSite: "none"
+// };
 
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({ origin: ["http://localhost:3000", "https://origin2.com"] }));
 
 //set security http headers
 app.use(helmet());
