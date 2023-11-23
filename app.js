@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
   var allowedDomains = [
     "http://localhost:3000",
     "https://grigoryanandrew22.github.io",
-    "https://b8q1q1v9-3000.euw.devtunnels.ms"
+    "https://cut-or-die.onrender.com"
   ];
   var origin = req.headers.origin;
   if (allowedDomains.indexOf(origin) > -1) {
