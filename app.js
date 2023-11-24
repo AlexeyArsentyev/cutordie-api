@@ -33,7 +33,6 @@ const app = express();
 app.use(function(req, res, next) {
   var allowedDomains = [
     "http://localhost:3000",
-    "https://grigoryanandrew22.github.io",
     "https://cut-or-die.onrender.com"
   ];
   var origin = req.headers.origin;
