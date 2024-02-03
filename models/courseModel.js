@@ -3,17 +3,33 @@ const mongoose = require("mongoose");
 //somecomment
 
 const courseSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "course name required"],
-    unique: [true, "course unique name required"],
-    trim: true,
-    maxlength: [100, "course name must have less than 100 characters"],
-    minlength: [2, "course name must have at least 2 characters"]
+  en: {
+    name: {
+      type: String,
+      required: [true, "course name required"],
+      unique: [true, "course unique name required"],
+      trim: true,
+      maxlength: [100, "course name must have less than 100 characters"],
+      minlength: [2, "course name must have at least 2 characters"]
+    },
+    description: {
+      type: String,
+      required: [true, "course description required"]
+    }
   },
-  description: {
-    type: String,
-    required: [true, "course description required"]
+  ua: {
+    name: {
+      type: String,
+      required: [true, "course name required"],
+      unique: [true, "course unique name required"],
+      trim: true,
+      maxlength: [100, "course name must have less than 100 characters"],
+      minlength: [2, "course name must have at least 2 characters"]
+    },
+    description: {
+      type: String,
+      required: [true, "course description required"]
+    }
   },
   difficulty: {
     type: Number,
