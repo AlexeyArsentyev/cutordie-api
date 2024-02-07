@@ -35,9 +35,21 @@ const packSchema = new mongoose.Schema({
   courses: [{ type: String }],
 
   price: {
-    type: Number,
-    required: [true, "pack price required"],
-    min: [0, "Price must be above equal or above 0"]
+    usd: {
+      type: Number,
+      required: [true, "pack price required"],
+      min: [0, "Price must be above equal or above 0"]
+    },
+    uah: {
+      type: Number,
+      required: [true, "pack price required"],
+      min: [0, "Price must be above equal or above 0"]
+    },
+    eur: {
+      type: Number,
+      required: [true, "pack price required"],
+      min: [0, "Price must be above equal or above 0"]
+    }
   },
 
   fileId: {
