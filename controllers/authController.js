@@ -136,13 +136,21 @@ const signToken = id => {
   });
 };
 
-exports.logout = catchAsync(async (req, res) => {
-  res.clearCookie("jwt");
-  res.status(204).json({
-    status: "success",
-    data: null
+// exports.logout = catchAsync(async (req, res) => {
+//   res.clearCookie("jwt");
+//   res.status(204).json({
+//     status: "success",
+//     data: null
+//   });
+// });
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
   });
-});
+  res.status(200).json({ status: "success" });
+};
 
 exports.protect = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
