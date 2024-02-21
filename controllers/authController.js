@@ -145,8 +145,8 @@ const signToken = id => {
 // });
 
 exports.logout = (req, res) => {
-  res.cookie("jwt", "loggedout", {
-    expires: new Date(Date.now() + 10 * 1000),
+  res.cookie("jwt", {
+    expires: new Date(Date.now() - 1000),
     httpOnly: true
   });
   res.status(200).json({ status: "success" });
