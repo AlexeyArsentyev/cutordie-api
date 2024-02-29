@@ -146,14 +146,14 @@ const signToken = id => {
 
 exports.logout = (req, res) => {
   res.cookie("jwt", {
-    expires: new Date(Date.now() - 1000),
+    expires: new Date(Date.now() - 10000000),
     httpOnly: true
   });
   res.status(200).json({ status: "success" });
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.body.jwt;
 
   if (!token) {
     return next(
