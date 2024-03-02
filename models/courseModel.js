@@ -15,7 +15,17 @@ const courseSchema = new mongoose.Schema({
     description: {
       type: String,
       required: [true, "course description required"]
-    }
+    },
+    paragraphs: [
+      {
+        type: String
+      }
+    ],
+    images: [
+      {
+        type: String
+      }
+    ]
   },
   ua: {
     name: {
@@ -29,7 +39,17 @@ const courseSchema = new mongoose.Schema({
     description: {
       type: String,
       required: [true, "course description required"]
-    }
+    },
+    paragraphs: [
+      {
+        type: String
+      }
+    ],
+    images: [
+      {
+        type: String
+      }
+    ]
   },
   difficulty: {
     type: Number,
