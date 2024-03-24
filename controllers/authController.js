@@ -212,15 +212,13 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const message = `Forgot your password? Enter this code on the site. ${resetToken}`;
 
   try {
-    if (process.env.SEND_EMAIL) {
-      await sendEmail({
-        email: user.email,
-        subject: "Forgot your password?",
-        message
-      });
-    } else {
-      console.log(message);
-    }
+    console.log("Start sending email");
+    await sendEmail({
+      email: user.email,
+      subject: "Forgot your password?",
+      message
+    });
+    console.log("Email sent");
 
     res.status(200).json({
       status: "success",
