@@ -218,7 +218,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       subject: "Forgot your password?",
       message
     });
-    console.log("Email sent");
 
     res.status(200).json({
       status: "success",
