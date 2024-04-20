@@ -154,6 +154,8 @@ exports.logout = (req, res) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   const token = req.body.jwt;
+  console.log(req.body);
+  console.log(token);
 
   if (!token) {
     return next(
