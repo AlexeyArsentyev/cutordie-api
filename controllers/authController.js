@@ -248,6 +248,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   const originalToken = user.passwordResetToken;
   const inputToken = req.body.passwordResetToken;
 
+  console.log(originalToken, inputToken);
+
   if (!originalToken) {
     return next(
       new AppError("Please execute forgot password procedure first", 400)
@@ -258,7 +260,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Token cant be empty", 400));
   }
 
-  if (!(await bcrypt.compare(originalToken, resetPassword))) {
+  if (!(await bcrypt.compare(inputToken, originalToken))) {
     return next(new AppError("Invalid code. Please try again.", 400));
   }
 
