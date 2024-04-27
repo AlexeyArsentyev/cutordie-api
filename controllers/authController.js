@@ -248,8 +248,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   const originalToken = user.passwordResetToken;
   const inputToken = req.body.passwordResetToken;
 
-  console.log(originalToken, inputToken);
-
   if (!originalToken) {
     return next(
       new AppError("Please execute forgot password procedure first", 400)
