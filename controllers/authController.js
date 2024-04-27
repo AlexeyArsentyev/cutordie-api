@@ -245,12 +245,20 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Code has expired. Please send email again", 400));
   }
 
-  if (
-    !(await bcrypt.compare(
-      req.body.passwordResetToken,
-      user.passwordResetToken
-    ))
-  ) {
+  const originalToken = user.passwordResetToken;
+  const inputToken = req.body.passwordResetToken;
+
+  if (!originalToken) {
+    return next(
+      new AppError("Please execute forgot password procedure first", 400)
+    );
+  }
+
+  if (!inputToken) {
+    return next(new AppError("Token cant be empty", 400));
+  }
+
+  if (!(await bcrypt.compare())) {
     return next(new AppError("Invalid code. Please try again.", 400));
   }
 
