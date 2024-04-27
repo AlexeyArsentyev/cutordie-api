@@ -258,7 +258,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Token cant be empty", 400));
   }
 
-  if (!(await bcrypt.compare())) {
+  if (!(await bcrypt.compare(originalToken, resetPassword))) {
     return next(new AppError("Invalid code. Please try again.", 400));
   }
 
