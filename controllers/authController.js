@@ -231,7 +231,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("There was an error sending the email", 500));
   }
 });
-
+v;
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     email: req.body.email
