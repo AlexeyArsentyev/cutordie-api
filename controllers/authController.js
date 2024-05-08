@@ -276,6 +276,41 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     token
   });
 });
+exports.checkToken = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({
+    email: req.body.email
+  });
+
+  if (!user) {
+    return next(new AppError("There is no user with this email", 404));
+  }
+
+  if (user.passwordResetExpires < Date.now()) {
+    return next(new AppError("Code has expired. Please send email again", 400));
+  }
+
+  const originalToken = user.passwordResetToken;
+  const inputToken = req.body.passwordResetToken;
+
+  if (!originalToken) {
+    return next(
+      new AppError("Please execute forgot password procedure first", 400)
+    );
+  }
+
+  if (!inputToken) {
+    return next(new AppError("Token cant be empty", 400));
+  }
+
+  if (!(await bcrypt.compare(inputToken, originalToken))) {
+    return next(new AppError("Invalid code. Please try again.", 400));
+  }
+
+  res.status(200).json({
+    status: "success",
+    token
+  });
+});
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   next();
