@@ -14,7 +14,7 @@ router.post("/createAdmin", userController.createAdmin);
 
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword", authController.resetPassword);
-router.get("/checkToken", authController.checkToken);
+router.post("/checkToken", authController.checkToken);
 router.patch("/updateMe", authController.protect, userController.updateMe);
 
 router
