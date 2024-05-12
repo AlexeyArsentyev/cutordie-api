@@ -51,30 +51,38 @@ const generateRandomString = length => {
 };
 
 exports.googleAuth = catchAsync(async (req, res, next) => {
-  let accessToken;
+  let credential;
+  let googleUser;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
-    accessToken = req.headers.authorization.split(" ")[1];
+    credential = req.headers.authorization.split(" ")[1];
   }
 
-  if (!accessToken) {
-    return next(new AppError("You are not logged in!", 401));
+  if (!credential) {
+    return next(new AppError("Access token required", 401));
   }
 
-  const googleUser = await axios.get(
-    "https://www.googleapis.com/oauth2/v3/userinfo",
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+  getAccessToken(credential)
+    .then(accessToken => console.log("Access Token:", accessToken))
+    .catch(error => console.error("Error:", error));
+
+  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
     }
-  );
-
-  if (!googleUser) {
-    return next(new AppError("You are not logged in!", 401));
-  }
+  })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response data
+      googleUser = data;
+      console.log(googleUser);
+    })
+    .catch(error => {
+      // Handle any errors
+      console.error("Error:", error);
+    });
 
   const userData = googleUser.data;
 
@@ -86,8 +94,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
       userName: userData.name,
       email: email,
-      password: randomPassword,
-      passwordConfirm: randomPassword
+      password: randomPassword
     });
 
     createSendToken(newUser, 201, res);
@@ -96,13 +103,36 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
   createSendToken(user, 201, res);
 });
 
+async function getAccessToken(authorizationCode) {
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      code: authorizationCode,
+      grant_type: "authorization_code",
+      redirect_uri: "YOUR_REDIRECT_URI" // Replace with your actual redirect URI
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get access token: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
 exports.signup = catchAsync(async (req, res, next) => {
   const filteredBody = filterFields(
     req.body,
     "userName",
     "email",
     "password",
-    "passwordConfirm",
+
     "passwordChangedAt"
   );
 
@@ -263,7 +293,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   }
 
   user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
+
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 

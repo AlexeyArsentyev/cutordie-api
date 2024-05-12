@@ -54,25 +54,7 @@ const userSchema = new mongoose.Schema({
       message: standardCharactersMessage
     }
   },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please confirm your password"],
-    minlength: [4, passwordLengthMessage],
-    maxlength: [30, passwordLengthMessage],
-    //only works on create and save!
-    validate: [
-      {
-        validator: function(el) {
-          return el === this.password;
-        },
-        message: "Passwords must be the same"
-      },
-      {
-        validator: standardCharactersValidator,
-        message: "Please use standard characters"
-      }
-    ]
-  },
+
   invoices: [{ invoiceId: { type: String }, courseId: { type: String } }],
   purchasedCourses: [{ type: String }],
 
@@ -92,7 +74,6 @@ userSchema.pre("save", async function(next) {
 
   this.password = await bcrypt.hash(this.password, 12);
 
-  this.passwordConfirm = undefined;
   next();
 });
 

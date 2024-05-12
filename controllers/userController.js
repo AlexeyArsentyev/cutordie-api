@@ -53,7 +53,7 @@ exports.createUser = catchAsync(async (req, res) => {
     "userName",
     "email",
     "password",
-    "passwordConfirm",
+
     "passwordChangedAt"
   );
 
@@ -73,7 +73,7 @@ exports.createAdmin = catchAsync(async (req, res, next) => {
     "userName",
     "email",
     "password",
-    "passwordConfirm",
+
     "passwordChangedAt",
     "adminKey"
   );
@@ -112,7 +112,7 @@ exports.updateUser = catchAsync(async (req, res) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  if (req.body.password || req.body.passwordConfirm) {
+  if (req.body.password) {
     return next(
       new AppError(
         "This route is not for password updates. Please use /updateMyPassword instead."
