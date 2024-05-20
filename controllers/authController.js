@@ -38,7 +38,7 @@ const createSendToken = (user, statusCode, res) => {
 
 const generateRandomString = length => {
   const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
   const randomValues = new Uint32Array(length);
   crypto.getRandomValues(randomValues);
 
@@ -51,49 +51,49 @@ const generateRandomString = length => {
 };
 
 exports.googleAuth = catchAsync(async (req, res, next) => {
-  let credential;
-  let googleUser;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    credential = req.headers.authorization.split(" ")[1];
-  }
+  // let credential;
+  // let googleUser;
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith("Bearer")
+  // ) {
+  //   credential = req.headers.authorization.split(" ")[1];
+  // }
 
-  if (!credential) {
-    return next(new AppError("Access token required", 401));
-  }
+  // if (!credential) {
+  //   return next(new AppError("Access token required", 401));
+  // }
 
-  getAccessToken(credential)
-    .then(accessToken => console.log("Access Token:", accessToken))
-    .catch(error => console.error("Error:", error));
+  // getAccessToken(credential)
+  //   .then(accessToken => console.log("Access Token:", accessToken))
+  //   .catch(error => console.error("Error:", error));
 
-  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
-  })
-    .then(response => response.json())
-    .then(data => {
-      // Handle the response data
-      googleUser = data;
-      console.log(googleUser);
-    })
-    .catch(error => {
-      // Handle any errors
-      console.error("Error:", error);
-    });
+  // fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  //   headers: {
+  //     Authorization: `Bearer ${accessToken}`
+  //   }
+  // })
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     // Handle the response data
+  //     googleUser = data;
+  //     console.log(googleUser);
+  //   })
+  //   .catch(error => {
+  //     // Handle any errors
+  //     console.error("Error:", error);
+  //   });
 
-  const userData = googleUser.data;
-
-  const randomPassword = generateRandomString(15);
-
-  const email = userData.email;
+  const body = req.body;
+  const email = body.email;
   const user = await User.findOne({ email });
   if (!user) {
+    const randomPassword = generateRandomString(15);
+    const userName = body.name;
+
     const newUser = await User.create({
-      userName: userData.name,
-      email: email,
+      userName,
+      email,
       password: randomPassword
     });
 
