@@ -183,7 +183,12 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  const token = req.body.jwt;
+  let token;
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  } else {
+    token = req.body.jwt;
+  }
 
   if (!token) {
     return next(
