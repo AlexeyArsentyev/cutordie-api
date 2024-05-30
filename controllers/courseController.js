@@ -80,9 +80,10 @@ exports.deleteCourse = catchAsync(async (req, res) => {
 });
 
 exports.createInvoice = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
   const user = req.user;
 
-  const course = await Course.findById(req.params.id);
+  const course = await Course.findById(id);
 
   if (!course) {
     return next(new AppError("No course found with this ID", 404));
@@ -95,7 +96,7 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 
   const url = "https://api.monobank.ua/api/merchant/invoice/create";
   const data = {
-    amount: course.price,
+    amount: course.price.uah, //cents or copiyka according to currency
     ccy: 980,
     merchantPaymInfo: {
       reference: "84d0070ee4e44667b31371d8f8813947",
@@ -113,16 +114,23 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
     }
   };
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Token": "uBssBGdixC9sYFD3hzVN1XDKohln5B_VnmKpPG3AM0iU"
-    },
-    body: JSON.stringify(data)
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Token": xtoken
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   const result = await response.json();
+
+  console.log(result);
 
   const invoiceId = result.invoiceId;
   const courseId = course._id;
@@ -138,6 +146,8 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   //     url: result.pageUrl
   //   }
   // });
+
+  console.log(result);
 
   res.redirect(result.pageUrl);
 });
