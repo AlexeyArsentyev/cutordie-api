@@ -147,9 +147,12 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
   //   }
   // });
 
-  console.log(result);
-
-  res.redirect(result.pageUrl);
+  res.status(200).json({
+    status: "success",
+    data: {
+      pageUrl: result.pageUrl
+    }
+  });
 });
 
 exports.validatePayment = catchAsync(async (req, res, next) => {
