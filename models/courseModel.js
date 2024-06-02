@@ -76,6 +76,10 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     required: [true, "course duration required"]
   },
+  equipment: {
+    type: String,
+    required: [true, "course duration required"]
+  },
   fileId: {
     type: String,
     required: [true, "fileId required"]
