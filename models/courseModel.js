@@ -20,11 +20,6 @@ const courseSchema = new mongoose.Schema({
       {
         type: String
       }
-    ],
-    images: [
-      {
-        type: String
-      }
     ]
   },
   ua: {
@@ -44,13 +39,9 @@ const courseSchema = new mongoose.Schema({
       {
         type: String
       }
-    ],
-    images: [
-      {
-        type: String
-      }
     ]
   },
+
   difficulty: {
     type: Number,
     required: [true, "difficulty required"]
@@ -84,7 +75,13 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: [true, "fileId required"]
   },
-  coverImage: {},
+
+  coverImage: { type: String, required: [true, "Cover image required"] },
+  images: [
+    {
+      type: String
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now()
