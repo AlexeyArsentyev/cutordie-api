@@ -12,12 +12,12 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 
   const users = await features.query;
 
-  users.forEach(async user => {
-    if (!user.purchasedCourses) {
-      return;
-    }
-    // await user.populate("purchasedCourses");
-  });
+  // users.forEach(async user => {
+  //   if (!user.purchasedCourses) {
+  //     return;
+  //   }
+  //   await user.populate("purchasedCourses");
+  // });
 
   res.status(200).json({
     status: "success",
