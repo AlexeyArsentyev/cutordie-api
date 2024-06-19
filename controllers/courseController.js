@@ -156,6 +156,8 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
 });
 
 exports.validatePayment = catchAsync(async (req, res, next) => {
+  console.log("MONOBANK REDIRECT SUCCESS!");
+  console.log("body", req.body);
   if (req.body.status !== "success") {
     return next(new AppError("Invoice is not paid yet", 202));
   }
