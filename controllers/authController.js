@@ -208,7 +208,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("User recently changed password. Please login again.", 401)
     );
   }
-  await currentUser.populate("purchasedCourses");
 
   req.user = currentUser;
 
