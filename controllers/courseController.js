@@ -103,7 +103,7 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
       destination: "Some course",
       comment: "Cut or die haircut course"
     },
-    redirectUrl: "https://grigoryanandrew22.github.io/cutordie/",
+    redirectUrl: "https://cut-or-die.onrender.com",
     webHookUrl:
       "https://cut-or-die-api.onrender.com/api/v1/courses/validatePayment",
     validity: 3600,
