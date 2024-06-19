@@ -89,6 +89,10 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
     return next(new AppError("No course found with this ID", 404));
   }
 
+  if (user.purchasedCourses.includes(id)) {
+    return next(new AppError("Course already acquired", 400));
+  }
+
   const xtoken =
     process.env.NODE_ENV === "production"
       ? process.env.XTOKEN
@@ -100,7 +104,7 @@ exports.createInvoice = catchAsync(async (req, res, next) => {
     ccy: 980,
     merchantPaymInfo: {
       reference: "84d0070ee4e44667b31371d8f8813947",
-      destination: "Some course",
+      destination: course.en.name, //idk maybe change
       comment: "Cut or die haircut course"
     },
     redirectUrl: "https://cut-or-die.onrender.com",
