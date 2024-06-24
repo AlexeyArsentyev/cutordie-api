@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
   },
 
   invoices: [{ invoiceId: { type: String }, courseId: { type: String } }],
-  purchasedCourses: [{ type: String }],
+  purchasedCourses: [{ type: mongoose.ObjectId, ref: "Course" }],
 
   passwordChangedAt: Date,
 

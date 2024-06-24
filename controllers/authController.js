@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const { promisify } = require("util");
 const axios = require("axios");
+const mongoose = require("mongoose");
 
 const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
@@ -193,7 +194,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  const currentUser = await User.findById(decoded.id);
+  const currentUser = await User.findById(decoded.id).populate(
+    "purchasedCourses"
+  );
+
   if (!currentUser) {
     return next(
       new AppError(
